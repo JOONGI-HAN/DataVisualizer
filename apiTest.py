@@ -1,5 +1,8 @@
 # AI model => Apodex: Apodex 1.1 Mini (free)
 
+import prompt
+
+from http.server import (ThreadingHTTPServer, BaseHTTPRequestHandler)
 from dotenv import load_dotenv
 import requests
 import json
@@ -10,32 +13,38 @@ load_dotenv()
 
 
 
-PROMPT = '''
-            You are an expert data visualization engineer and statistician.
-            
-            Your task is to analyze the provided CSV data (or its column structure/sample rows if the full dataset is too large)
-            and recommend the single best chart, graph, or diagram type to visualize it.
-
-            Please follow these constraints:
-                1. Base your recommendation on the data types, distribution, and the analytical relationship between the variables
-                   (e.g., time-series, categorical comparison, correlation, distribution, composition).
-                2. Provide your output strictly in the following format, with no extra conversational filler,
-                   markdown code blocks outside of the structure, or preamble:
-
-                        {
-                            "answer": "[Name of the best chart/graph/diagram type]",
-                            "reasoning": "[One or two concise sentences explaining why this visualization suits the data structure and
-                                           analytical goal]"
-                        }
-         '''.strip()
 
 
 
-if __name__ == '__main__':
+class CustomHandler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        content_length = int(self.headers["content-length"]) 
+        data = self.rfile.read(content_length)
 
-    with open("samples/chickweight.csv") as f:
-        data = f.read()
+        llm_response = LLM_request(data)
+        print(llm_response)
+        
+        self.send_response(200)
 
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+        self.end_headers()
+        
+        response_body = json.dumps(llm_response).encode("utf-8")
+        
+        self.wfile.write(response_body)
+
+
+PORT = 8000
+def start_server():
+    httpd = ThreadingHTTPServer(('', PORT), CustomHandler)
+    httpd.serve_forever()
+
+
+
+def LLM_request(data):
     response = requests.post(
             url     = "https://openrouter.ai/api/v1/chat/completions",
             headers = {
@@ -44,11 +53,11 @@ if __name__ == '__main__':
             },
             data    = json.dumps(
                 {
-                    "model"    : "apodex/apodex-1.1-mini:free",
+                    "model"    : "dots-studio/dots-3-note-preview:free",
                     "messages" : [
                         {
                             "role"    : "user",
-                            "content" : PROMPT + data
+                            "content" : prompt.PROMPT + data.decode("utf-8")
                         },
                     ],
                     "reasoning" : {
@@ -58,5 +67,11 @@ if __name__ == '__main__':
             )
     )
 
-    response = response.json()
+    response = response.json() 
     print(response)
+    return response["choices"][0]["message"]["content"]
+
+
+if __name__ == '__main__':
+    start_server() 
+
