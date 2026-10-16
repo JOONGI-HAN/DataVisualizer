@@ -1,24 +1,31 @@
 <!DOCTYPE html>
+<html lang = "en">
+<head>
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+	<title>CSV Chart Generator</title>
+	<link rel = "stylesheet" href = "./style.css">
+</head>
+<body>
+	<main class = "app">
+		<header class = "header">
+			<h1 class = "header--title">CSV Chart Generator</h1>
+			<input class = "fileSelector" type = "file" accept = ".csv, .xls, .xlsx, .ods">
+		</header>
 
-<html>
+		<section class = "dataPreview">
+			<h2 class = "dataPreview--title">Data preview</h2>
+			<div class = "dataPreview--container"></div>
+		</section>
 
-	<head>
-		<link rel = "shortcut icon" href = "#">
-	</head>
+		<section class = "chart">
+			<h2 class = "chart--title">Chart</h2>
+			<div class = "chart--container">
+				<canvas id = "chart"></canvas>
+			</div>
+		</section>
+	</main>
 
-	<body>
-
-		<input class = "fileSelector" type = "file" accept = ".csv, .xls, .xlsx, .ods" />
-		
-		<div class = "dataPreview--container">
-			No currently loaded data, choose to upload first.
-		</div>
-
-		<div class = "chart--container">
-			<canvas id = "chart" width = 800></canvas>
-		</div>
-		
-		<script src = "./dist/main.js"></script>
-	</body>
-	
+	<script src = "./dist/main.js"></script>
+</body>
 </html>

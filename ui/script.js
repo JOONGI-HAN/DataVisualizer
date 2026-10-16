@@ -9,6 +9,8 @@ const ctx          = document.getElementById("chart");
 
 const reader  = new FileReader();
 
+const PAGE_SIZE = 10;
+
 
 
 function normalize_data(data) {
@@ -246,6 +248,76 @@ function clearChart() {
 }
 
 
+function getHeaders(raw) {
+	const end = raw.indexOf("\n");
+	return raw.slice(0, end === -1 ? raw.length : end).split(",").map(col => col.trim());
+}
+
+
+function buildElement(tag, className = "", text = "") {
+	const element = document.createElement(tag);
+	if (className) element.className = className;
+	element.textContent = text;
+	return element;
+}
+
+
+function renderPreview(headers, data) {
+	const totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE));
+	let page = 0;
+
+	const wrapper   = buildElement("div", "dataPreview--tableWrapper");
+	const table     = buildElement("table", "dataPreview--table");
+	const thead     = buildElement("thead");
+	const tbody     = buildElement("tbody");
+	const headRow   = buildElement("tr");
+
+	const controls  = buildElement("div", "dataPreview--controls");
+	const status    = buildElement("span", "dataPreview--status");
+	const pager     = buildElement("div", "dataPreview--pager");
+	const prev      = buildElement("button", "dataPreview--button", "Previous");
+	const pageLabel = buildElement("span", "dataPreview--page");
+	const next      = buildElement("button", "dataPreview--button", "Next");
+
+	prev.type = "button";
+	next.type = "button";
+
+	headRow.append(buildElement("th", "dataPreview--index", "#"));
+	for (const header of headers) headRow.append(buildElement("th", "", header));
+
+	thead.append(headRow);
+	table.append(thead, tbody);
+	wrapper.append(table);
+	pager.append(prev, pageLabel, next);
+	controls.append(status, pager);
+
+	function showPage(target) {
+		page = Math.min(Math.max(target, 0), totalPages - 1);
+
+		const start = page * PAGE_SIZE;
+		const rows  = data.slice(start, start + PAGE_SIZE).map((entry, i) => {
+			const row = buildElement("tr");
+			row.append(buildElement("td", "dataPreview--index", start + i + 1));
+			for (const header of headers) row.append(buildElement("td", "", entry[header.toLowerCase()] ?? ""));
+			return row;
+		});
+
+		tbody.replaceChildren(...rows);
+
+		status.textContent    = data.length === 0 ? "0 rows" : `${start + 1}–${start + rows.length} of ${data.length} rows`;
+		pageLabel.textContent = `${page + 1} / ${totalPages}`;
+		prev.disabled         = page === 0;
+		next.disabled         = page === totalPages - 1;
+	}
+
+	prev.addEventListener("click", () => showPage(page - 1));
+	next.addEventListener("click", () => showPage(page + 1));
+
+	showPage(0);
+	dataPreview.replaceChildren(wrapper, controls);
+}
+
+
 
 function renderChart(datasets, xLabel = 'X Axis', yLabel = 'Y Axis', type = 'line', labels = undefined, stacked = false, horizontal = false) {
     clearChart();
@@ -377,4 +449,5 @@ reader.addEventListener("load", () => {
 	.catch(err => console.log(`An error has occured, ${err}`))
 	
 	normalizedData = normalize_data(reader.result);
+	renderPreview(getHeaders(reader.result), normalizedData);
 })

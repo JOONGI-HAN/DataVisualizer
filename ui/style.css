@@ -1,0 +1,191 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+:root {
+	--bg      : #fafafa;
+	--surface : #ffffff;
+	--border  : #e5e7eb;
+	--text    : #111827;
+	--muted   : #6b7280;
+	--hover   : #f3f4f6;
+	--accent  : #2563eb;
+	--radius  : 8px;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.app {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 32px 20px 64px;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+}
+
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.header--title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.fileSelector {
+	color: var(--muted);
+	font: inherit;
+}
+
+.fileSelector::file-selector-button {
+	margin-right: 12px;
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--surface);
+	color: var(--text);
+	font: inherit;
+	cursor: pointer;
+}
+
+.fileSelector::file-selector-button:hover {
+	background: var(--hover);
+}
+
+.dataPreview--title,
+.chart--title {
+	margin: 0 0 12px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.dataPreview--container:empty::before {
+	content: "Upload a CSV file to preview it here.";
+	display: block;
+	padding: 24px;
+	border: 1px dashed var(--border);
+	border-radius: var(--radius);
+	color: var(--muted);
+	text-align: center;
+}
+
+.dataPreview--tableWrapper {
+	overflow-x: auto;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.dataPreview--table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.dataPreview--table th,
+.dataPreview--table td {
+	padding: 8px 14px;
+	text-align: left;
+	white-space: nowrap;
+	border-bottom: 1px solid var(--border);
+}
+
+.dataPreview--table th {
+	background: #f9fafb;
+	color: var(--muted);
+	font-weight: 600;
+}
+
+.dataPreview--table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.dataPreview--table tbody tr:hover {
+	background: var(--hover);
+}
+
+.dataPreview--table .dataPreview--index {
+	width: 1%;
+	color: var(--muted);
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.dataPreview--controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding-top: 12px;
+	color: var(--muted);
+}
+
+.dataPreview--pager {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.dataPreview--page {
+	min-width: 56px;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+}
+
+.dataPreview--button {
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	background: var(--surface);
+	color: var(--text);
+	font: inherit;
+	cursor: pointer;
+}
+
+.dataPreview--button:hover:not(:disabled) {
+	background: var(--hover);
+}
+
+.dataPreview--button:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.dataPreview--button:disabled {
+	color: var(--muted);
+	opacity: 0.5;
+	cursor: default;
+}
+
+.chart--container {
+	position: relative;
+	padding: 16px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.chart--container canvas {
+	max-width: 100%;
+}
+
+@media (max-width: 600px) {
+	.dataPreview--controls {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
