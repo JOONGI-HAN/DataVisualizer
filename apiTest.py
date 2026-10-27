@@ -20,9 +20,8 @@ class CustomHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers["content-length"]) 
         data = self.rfile.read(content_length)
-
+        
         llm_response = LLM_request(data)
-        print(llm_response)
         
         self.send_response(200)
 
@@ -40,6 +39,9 @@ class CustomHandler(BaseHTTPRequestHandler):
 PORT = 8000
 def start_server():
     httpd = ThreadingHTTPServer(('', PORT), CustomHandler)
+
+    print(f"server started @ localhost:{PORT}")
+   
     httpd.serve_forever()
 
 
@@ -68,7 +70,6 @@ def LLM_request(data):
     )
 
     response = response.json() 
-    print(response)
     return response["choices"][0]["message"]["content"]
 
 

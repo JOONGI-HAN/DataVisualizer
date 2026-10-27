@@ -146,7 +146,7 @@ body {
 	font-variant-numeric: tabular-nums;
 }
 
-.dataPreview--button {
+.button {
 	padding: 6px 12px;
 	border: 1px solid var(--border);
 	border-radius: 6px;
@@ -156,31 +156,81 @@ body {
 	cursor: pointer;
 }
 
-.dataPreview--button:hover:not(:disabled) {
+.button:hover:not(:disabled) {
 	background: var(--hover);
 }
 
-.dataPreview--button:focus-visible {
+.button:focus-visible {
 	outline: 2px solid var(--accent);
 	outline-offset: 2px;
 }
 
-.dataPreview--button:disabled {
+.button:disabled {
 	color: var(--muted);
 	opacity: 0.5;
 	cursor: default;
 }
 
+.chart-header--container {
+	display : flex;
+	gap : 12px;
+	
+	margin-bottom : 6px;
+}
+
+.chart-export--container {
+	position : relative;
+}
+
+.chart-export {
+	padding : 6px 24px;
+}
+
+.chart-export--container img {
+	position : absolute;
+	top : 8px; 
+	left : 4px;
+}
+
 .chart--container {
 	position: relative;
 	padding: 16px;
-	background: var(--surface);
+	background-color: var(--surface);
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
 }
 
 .chart--container canvas {
 	max-width: 100%;
+}
+
+.loading--spinner {
+	position : absolute;
+	top : 50%;
+	left : 50%;
+	transform : translate(-50%, -50%);
+
+	border : 12px solid #f3f3f3;
+	border-top : 12px solid #3498db;
+	border-radius : 50%;
+	width : 64px;
+	height : 64px;
+
+	animation : spin 2s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform : rotate(0deg);
+	}
+	100% {
+		transform : rotate(360deg);
+	}
+}
+
+
+.hidden {
+	display : none;
 }
 
 @media (max-width: 600px) {

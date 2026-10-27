@@ -1,10 +1,14 @@
 import Chart from 'chart.js/auto';
 
 
-
 const fileSelector = document.querySelector(".fileSelector");
 const dataPreview  = document.querySelector(".dataPreview--container");
 const ctx          = document.getElementById("chart");
+const spinner      = document.querySelector(".loading--spinner");
+const exportButton = document.querySelector(".chart-export");
+
+
+exportButton.disabled = true;
 
 
 const reader  = new FileReader();
@@ -275,9 +279,9 @@ function renderPreview(headers, data) {
 	const controls  = buildElement("div", "dataPreview--controls");
 	const status    = buildElement("span", "dataPreview--status");
 	const pager     = buildElement("div", "dataPreview--pager");
-	const prev      = buildElement("button", "dataPreview--button", "Previous");
+	const prev      = buildElement("button", "dataPreview--button button", "Previous");
 	const pageLabel = buildElement("span", "dataPreview--page");
-	const next      = buildElement("button", "dataPreview--button", "Next");
+	const next      = buildElement("button", "dataPreview--button button", "Next");
 
 	prev.type = "button";
 	next.type = "button";
@@ -318,9 +322,21 @@ function renderPreview(headers, data) {
 }
 
 
+const exportButtonHandler = () => {
+	console.log("clicked");
+
+	const img = ctx.toDataURL();
+	const downloadLink = document.createElement('a');
+
+	downloadLink.download = new Date().toUTCString();
+	downloadLink.href = img;
+
+	downloadLink.click();
+}
 
 function renderChart(datasets, xLabel = 'X Axis', yLabel = 'Y Axis', type = 'line', labels = undefined, stacked = false, horizontal = false) {
-    clearChart();
+	spinner.classList.add("hidden");
+	exportButton.disabled = false;
 
     new Chart(ctx, {
         type: type,
@@ -347,12 +363,15 @@ function renderChart(datasets, xLabel = 'X Axis', yLabel = 'Y Axis', type = 'lin
             }
         }
     });
+
+	exportButton.addEventListener("click", exportButtonHandler); 
 }
 
 
 // pie, doughnut, polarArea and radar dont use x/y axes so they get their own render function
 function renderRadialChart(type, labels, datasets, filled = false) {
-	clearChart();
+	spinner.classList.add("hidden");
+	exportButton.disabled = false;
 
 	new Chart(ctx, {
 		type: type,
@@ -364,12 +383,19 @@ function renderRadialChart(type, labels, datasets, filled = false) {
 			responsive: true
 		}
 	});
+	
+	exportButton.addEventListener("click", exportButtonHandler); 
 }
 
 
 fileSelector.addEventListener("change", () => {
 	const file = fileSelector.files[0];
 	reader.readAsText(file);
+
+	clearChart();
+	exportButton.removeEventListener("click", exportButtonHandler);	
+
+	spinner.classList.remove("hidden");
 });
 
 

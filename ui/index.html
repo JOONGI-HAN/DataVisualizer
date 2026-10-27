@@ -10,7 +10,7 @@
 	<main class = "app">
 		<header class = "header">
 			<h1 class = "header--title">CSV Chart Generator</h1>
-			<input class = "fileSelector" type = "file" accept = ".csv, .xls, .xlsx, .ods">
+			<input class = "fileSelector" type = "file" accept = ".csv">
 		</header>
 
 		<section class = "dataPreview">
@@ -19,9 +19,16 @@
 		</section>
 
 		<section class = "chart">
-			<h2 class = "chart--title">Chart</h2>
+			<div class = "chart-header--container">
+				<h2 class = "chart--title">Chart</h2>
+				<div class = "chart-export--container">
+					<img src = "./assets/export-icon.svg" alt = "export" height = 18 width = 18 />
+					<button type = "button" class = "chart-export button">Export</button>
+				</div>
+			</div>
 			<div class = "chart--container">
 				<canvas id = "chart"></canvas>
+				<div class = "loading--spinner hidden"></div>
 			</div>
 		</section>
 	</main>
